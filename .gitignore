@@ -1,0 +1,15 @@
+# Dependencies
+node_modules/
+
+# Runtime secrets / config (never commit — see docs/DESIGN.md §7)
+.env
+*.env
+!*.env.example
+
+# Build / logs / OS
+dist/
+build/
+coverage/
+npm-debug.log*
+*.log
+.DS_Store
