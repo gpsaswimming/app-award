@@ -27,6 +27,7 @@ export const AWARDS = {
       { key: 'addressLine1', label: 'Address', type: 'text', required: true },
       { key: 'addressLine2', label: 'Address (line 2)', type: 'text', required: false },
       { key: 'telephone', label: 'Telephone', type: 'tel', required: true },
+      { key: 'email', label: 'Email', type: 'email', required: true },
       { key: 'dateOfBirth', label: 'Date of birth', type: 'date', required: true },
       { key: 'pool', label: 'Pool represented', type: 'select', required: true, options: TEAMS },
       { key: 'yearsInGPSA', label: 'Years in GPSA', type: 'number', required: true },
@@ -51,6 +52,7 @@ export const AWARDS = {
       { key: 'essayWriterName', label: 'Name of essay writer', type: 'text', required: true },
       { key: 'relationshipToCoach', label: 'Relationship to coach', type: 'text', required: true },
       { key: 'telephone', label: 'Telephone (of essay writer)', type: 'tel', required: true },
+      { key: 'email', label: 'Email (of essay writer)', type: 'email', required: true },
     ],
   },
 };

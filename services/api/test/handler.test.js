@@ -30,6 +30,7 @@ const validBody = (over = {}) => ({
   essayWriterName: 'Parent B',
   relationshipToCoach: 'Parent',
   telephone: '757-555-1212',
+  email: 'parent@example.org',
   essay: essay(300),
   ...over,
 });
@@ -50,12 +51,32 @@ test('happy path returns id and emails a PDF attachment', withTurnstile(true, as
   const out = res.json();
   assert.equal(out.ok, true);
   assert.equal(out.id, 'lamberson-20260727-1200');
-  assert.equal(mailer.sent.length, 1);
-  assert.equal(mailer.sent[0].to, 'president@example.org');
-  assert.equal(mailer.sent[0].attachments[0].filename, 'lamberson-20260727-1200.pdf');
-  assert.ok(Buffer.isBuffer(mailer.sent[0].attachments[0].content));
+  // Two emails: the president's full copy (with PDF) + the submitter's receipt.
+  assert.equal(mailer.sent.length, 2);
+  const pres = mailer.sent[0];
+  assert.equal(pres.to, 'president@example.org');
+  assert.equal(pres.attachments[0].filename, 'lamberson-20260727-1200.pdf');
+  assert.ok(Buffer.isBuffer(pres.attachments[0].content));
+  const receipt = mailer.sent[1];
+  assert.equal(receipt.to, 'parent@example.org');
+  assert.ok(!receipt.attachments, 'receipt carries no attachment');
+  assert.match(receipt.subject, /submission received/i);
   await app.close();
 }));
+
+test('a failing receipt does not fail the submission', async () => {
+  const orig = global.fetch;
+  global.fetch = async () => ({ json: async () => ({ success: true }) });
+  // Mailer that succeeds for the president but throws on the receipt (2nd send).
+  let n = 0;
+  const mailer = { sendMail: async () => { if (++n === 2) throw new Error('receipt bounced'); return {}; } };
+  const app = buildApp({ cfg: baseCfg, mailer, logger: false, now: () => new Date('2026-07-27T12:00:00Z') });
+  const res = await app.inject({ method: 'POST', url: '/api/submit', payload: validBody() });
+  global.fetch = orig;
+  assert.equal(res.statusCode, 200);
+  assert.equal(res.json().ok, true);
+  await app.close();
+});
 
 test('failed bot check is rejected 400', withTurnstile(false, async () => {
   const mailer = fakeMailer();

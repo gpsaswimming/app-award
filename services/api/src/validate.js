@@ -21,6 +21,10 @@ export function validateSubmission(awardId, payload = {}) {
       errors.push(`${field.label} has an invalid value.`);
       continue;
     }
+    if (value && field.type === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+      errors.push(`${field.label} must be a valid email address.`);
+      continue;
+    }
     data[field.key] = value;
   }
 

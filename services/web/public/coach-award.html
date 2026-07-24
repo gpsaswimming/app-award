@@ -4,66 +4,93 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Lamberson Coach Award Nomination — GPSA</title>
+  <link rel="icon" href="https://assets.gpsaswimming.org/img/favicons/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://assets.gpsaswimming.org/img/favicons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://assets.gpsaswimming.org/img/favicons/favicon-16x16.png">
+  <link rel="apple-touch-icon" href="https://assets.gpsaswimming.org/img/favicons/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://css.gpsaswimming.org/gpsa-tools-common.css">
-  <link rel="stylesheet" href="/award.css">
+  <link rel="stylesheet" href="https://css.gpsaswimming.org/gpsa-award.css">
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
 </head>
 <body>
-  <header class="site-header">
-    <div class="container">
-      <img src="https://assets.gpsaswimming.org/img/gpsa_logo.png" alt="GPSA logo" onerror="this.style.display='none'">
-      <h1>Kei Lamberson Coach Award</h1>
+  <header class="hero hero--form">
+    <div class="hero-inner">
+      <div class="hero-brand">
+        <img src="https://assets.gpsaswimming.org/img/gpsa_logo.png" alt="GPSA"
+             onerror="this.onerror=null;this.src='https://placehold.co/84x84/002366/FFFFFF?text=GPSA';">
+        <span class="hero-wordmark">Greater Peninsula Swimming Association</span>
+        <a class="hero-back" href="/">All awards</a>
+      </div>
+      <span class="eyebrow">Coach Award</span>
+      <h1 class="hero-title">Kei Lamberson Outstanding Coach Award</h1>
+      <p class="hero-sub">Nominate a coach who brings joy, compassion, and companionship to the pool.</p>
     </div>
   </header>
 
-  <main class="container">
-    <p><a class="back-link" href="/">&larr; All awards</a></p>
+  <main class="wrap">
     <div id="closed-notice" class="notice" hidden>Nominations for this award are closed.</div>
 
-    <form id="award-form" data-award="lamberson" class="form-card" novalidate>
-      <p class="prompt" data-prompt="lamberson" style="margin-bottom:1.5rem">
-        &ldquo;How has your coach demonstrated joy, compassion and companionship in connecting with
-        all swimmers on your team this summer?&rdquo;
-      </p>
+    <form id="award-form" data-award="lamberson" novalidate>
+      <section class="card">
+        <p class="kicker">Nomination</p>
+        <h2>The nomination</h2>
+        <p class="lead">Who you're nominating, and how to reach you.</p>
 
-      <div class="field">
-        <label for="coachName">Name of nominated coach <span class="req">*</span></label>
-        <input id="coachName" name="coachName" type="text" required>
-      </div>
-      <div class="field">
-        <label for="pool">Pool represented <span class="req">*</span></label>
-        <select id="pool" name="pool" required data-teams></select>
-      </div>
-      <div class="two-col">
         <div class="field">
-          <label for="essayWriterName">Name of essay writer <span class="req">*</span></label>
-          <input id="essayWriterName" name="essayWriterName" type="text" required autocomplete="name">
+          <label for="coachName">Name of nominated coach <span class="req">*</span></label>
+          <input id="coachName" name="coachName" type="text" required>
         </div>
         <div class="field">
-          <label for="relationshipToCoach">Relationship to coach <span class="req">*</span></label>
-          <input id="relationshipToCoach" name="relationshipToCoach" type="text" required>
+          <label for="pool">Pool represented <span class="req">*</span></label>
+          <select id="pool" name="pool" required data-teams></select>
         </div>
-      </div>
-      <div class="field">
-        <label for="telephone">Telephone (of essay writer) <span class="req">*</span></label>
-        <input id="telephone" name="telephone" type="tel" required autocomplete="tel">
-      </div>
+        <div class="grid-2">
+          <div class="field">
+            <label for="essayWriterName">Name of essay writer <span class="req">*</span></label>
+            <input id="essayWriterName" name="essayWriterName" type="text" required autocomplete="name">
+          </div>
+          <div class="field">
+            <label for="relationshipToCoach">Relationship to coach <span class="req">*</span></label>
+            <input id="relationshipToCoach" name="relationshipToCoach" type="text" required>
+          </div>
+        </div>
+        <div class="field">
+          <label for="telephone">Telephone <span class="opt">(of essay writer)</span> <span class="req">*</span></label>
+          <input id="telephone" name="telephone" type="tel" required autocomplete="tel">
+        </div>
+        <div class="field">
+          <label for="email">Email <span class="opt">(of essay writer)</span> <span class="req">*</span></label>
+          <input id="email" name="email" type="email" required autocomplete="email">
+          <p class="hint">We'll send your confirmation here.</p>
+        </div>
+      </section>
 
-      <div class="field">
-        <label for="essay">Essay <span class="req">*</span></label>
-        <textarea id="essay" name="essay" required data-min="250" data-max="750"></textarea>
-        <div class="hint">Minimum 250, maximum 750 words. <span class="wordcount" id="wordcount">0 words</span></div>
-      </div>
+      <section class="card">
+        <p class="kicker">Essay</p>
+        <h2>Your essay</h2>
+        <p class="prompt">
+          “How has your coach demonstrated joy, compassion and companionship in connecting with all
+          swimmers on your team this summer?”
+        </p>
+        <div class="field">
+          <label for="essay">Essay <span class="req">*</span></label>
+          <textarea id="essay" name="essay" required data-min="250" data-max="750"
+                    placeholder="Write your essay here…"></textarea>
+          <p class="hint">Minimum 250, maximum 750 words. <span class="wordcount" id="wordcount">0 words</span></p>
+        </div>
+      </section>
 
-      <div class="field" id="turnstile"></div>
-
-      <button class="btn btn-red" type="submit" id="submit">Submit nomination</button>
+      <section class="card">
+        <div id="turnstile" class="turnstile-holder"></div>
+        <button class="btn btn--red" type="submit" id="submit">Submit nomination</button>
+      </section>
     </form>
   </main>
 
-  <div id="toast" role="status" aria-live="polite"></div>
+  <div id="toast-container"></div>
   <script src="/config.js"></script>
   <script src="/app.js"></script>
 </body>

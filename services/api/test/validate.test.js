@@ -10,6 +10,7 @@ const goodLamberson = {
   essayWriterName: 'Parent B',
   relationshipToCoach: 'Parent',
   telephone: '757-555-1212',
+  email: 'parent@example.org',
   essay: essay(300),
 };
 
@@ -39,6 +40,18 @@ test('essay over the band fails', () => {
 test('invalid pool option is rejected', () => {
   const r = validateSubmission('lamberson', { ...goodLamberson, pool: 'Nonexistent Pool' });
   assert.equal(r.ok, false);
+});
+
+test('missing email fails', () => {
+  const r = validateSubmission('lamberson', { ...goodLamberson, email: '' });
+  assert.equal(r.ok, false);
+  assert.match(r.error, /required/i);
+});
+
+test('malformed email fails', () => {
+  const r = validateSubmission('lamberson', { ...goodLamberson, email: 'not-an-email' });
+  assert.equal(r.ok, false);
+  assert.match(r.error, /valid email/i);
 });
 
 test('unknown award is rejected', () => {
