@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GPSA Awards &amp; Scholarships</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://css.gpsaswimming.org/gpsa-tools-common.css">
+  <link rel="stylesheet" href="/award.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <img src="https://assets.gpsaswimming.org/img/gpsa_logo.png" alt="GPSA logo" onerror="this.style.display='none'">
+      <h1>Awards &amp; Scholarships</h1>
+    </div>
+  </header>
+
+  <main class="container">
+    <p class="lede">
+      Each summer GPSA recognizes an outstanding graduating swimmer and an outstanding coach.
+      Choose an award below to submit an application or nomination. Submissions go to the league
+      president for review by the sponsoring families.
+    </p>
+
+    <div class="cards">
+      <section class="card">
+        <h2>J. Kyle Hurdle Scholarship</h2>
+        <p class="amount">Up to $800 · graduating senior swimmers</p>
+        <p>
+          For a recently graduated senior (or a swimmer who has completed their final year of GPSA
+          eligibility) advancing their education. Submitted by the applicant.
+        </p>
+        <p class="prompt" data-prompt="hurdle">
+          &ldquo;What positive impact has summer swimming had on your life? How do you intend to pay
+          this forward?&rdquo;
+        </p>
+        <p class="meta">Essay 300&ndash;700 words · <span data-deadline="hurdle">deadline TBA</span></p>
+        <a class="btn" href="/scholarship">Apply for the scholarship</a>
+      </section>
+
+      <section class="card">
+        <h2>Kei Lamberson Outstanding Coach Award</h2>
+        <p class="amount">$500 · nominate a GPSA coach</p>
+        <p>
+          Honors a coach who exemplifies joy, compassion, and companionship in connecting with
+          swimmers. Nominated by a GPSA family.
+        </p>
+        <p class="prompt" data-prompt="lamberson">
+          &ldquo;How has your coach demonstrated joy, compassion and companionship in connecting with
+          all swimmers on your team this summer?&rdquo;
+        </p>
+        <p class="meta">Essay 250&ndash;750 words · <span data-deadline="lamberson">deadline TBA</span></p>
+        <a class="btn btn-red" href="/coach-award">Nominate a coach</a>
+      </section>
+    </div>
+  </main>
+
+  <div id="toast" role="status" aria-live="polite"></div>
+  <script src="/config.js"></script>
+  <script src="/app.js"></script>
+</body>
+</html>
