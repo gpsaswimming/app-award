@@ -2,7 +2,7 @@ import { AWARDS } from './constants.js';
 import { verifyTurnstile } from './turnstile.js';
 import { validateSubmission } from './validate.js';
 import { renderPdf } from './pdf.js';
-import { sendSubmissionEmail } from './email.js';
+import { sendSubmissionEmail, sendReceiptEmail } from './email.js';
 import { makeSubmissionId } from './util.js';
 
 // POST /api/submit — Turnstile → deadline → validate → PDF → email. Stateless:
@@ -41,6 +41,16 @@ export function makeSubmitHandler({ cfg, mailer, now = () => new Date() }) {
     } catch (err) {
       request.log.error({ err }, 'submission processing failed');
       return reply.code(502).send({ ok: false, error: 'Could not deliver your submission. Please try again shortly.' });
+    }
+
+    // Best-effort confirmation receipt to the submitter — never fail the
+    // submission if only the receipt bounces (the president's copy is what counts).
+    if (result.data.email) {
+      try {
+        await sendReceiptEmail(mailer, cfg, { awardId, submissionId, toEmail: result.data.email });
+      } catch (err) {
+        request.log.warn({ err }, 'submitter receipt email failed (non-fatal)');
+      }
     }
 
     return reply.send({ ok: true, id: submissionId });
