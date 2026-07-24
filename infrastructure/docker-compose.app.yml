@@ -1,4 +1,4 @@
-# App tier — runs on the app node. Holds all secrets (api.env).
+# App tier — runs on the app node. Holds all secrets (.env).
 # Ingress to :3000 must be restricted to the DMZ node by the operator's firewall.
 services:
   app-award-api:
@@ -6,6 +6,6 @@ services:
     container_name: app-award-api
     restart: unless-stopped
     env_file:
-      - api.env
+      - .env
     ports:
       - "3000:3000"

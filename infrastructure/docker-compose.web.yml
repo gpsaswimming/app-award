@@ -1,11 +1,11 @@
-# DMZ tier — runs on the DMZ node. Zero credentials (web.env holds no secrets).
-# The edge routes award.gpsaswimming.org to :8080 here.
+# DMZ tier — runs on the DMZ node. Zero credentials (.env holds no secrets).
+# The edge routes the awards site to :8080 here.
 services:
   app-award-web:
     image: ghcr.io/gpsaswimming/app-award-web:latest
     container_name: app-award-web
     restart: unless-stopped
     env_file:
-      - web.env
+      - .env
     ports:
       - "8080:8080"

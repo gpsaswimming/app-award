@@ -28,7 +28,8 @@ direct internet ingress. Config is injected at runtime via `.env` files; images 
 - **Blinding by construction** — the Hurdle PDF is built from the essay alone. `pdfBodyFields()` in
   `services/api/src/pdf.js` returns `[]` for any award with `pdfIncludesFields: false`. Identity
   fields must never reach the blinded PDF.
-- **DMZ holds zero credentials** — all secrets live only on the app tier (`api.env`).
+- **DMZ holds zero credentials** — all secrets live only on the app tier (`.env` on the app node,
+  loaded via `env_file`).
 - **Escape all user input** in the email HTML body; never place user input in an email header.
 - **Server is authoritative** on Turnstile, deadline, required fields, and essay word count. Client
   checks are UX only.
