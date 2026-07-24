@@ -13,13 +13,29 @@
     'Willow Oaks', 'Windy Point', 'Wythe'
   ];
 
-  function showToast(msg, isErr) {
-    var t = document.getElementById('toast');
-    if (!t) { window.alert(msg); return; }
-    t.textContent = msg;
-    t.className = isErr ? 'show err' : 'show';
-    clearTimeout(showToast._t);
-    showToast._t = setTimeout(function () { t.className = ''; }, 5000);
+  function escapeHtml(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  // Toast via the shared GPSA stylesheet (#toast-container / .toast-*).
+  function showToast(message, type, duration) {
+    type = type || 'info';
+    duration = duration || 5000;
+    var container = document.getElementById('toast-container');
+    if (!container) { window.alert(message); return; }
+    var icons = { success: '✓', error: '⚠', warning: '⚠', info: 'ℹ' };
+    var toast = document.createElement('div');
+    toast.className = 'toast toast-' + type;
+    toast.innerHTML =
+      '<span class="toast-icon" aria-hidden="true">' + (icons[type] || icons.info) + '</span>' +
+      '<span class="toast-message">' + escapeHtml(message) + '</span>' +
+      '<button class="toast-close" aria-label="Dismiss">×</button>';
+    container.appendChild(toast);
+    var remove = function () { toast.classList.add('toast-exit'); setTimeout(function () { toast.remove(); }, 300); };
+    toast.querySelector('.toast-close').addEventListener('click', remove);
+    setTimeout(remove, duration);
   }
 
   function parseDeadline(iso) {
@@ -79,7 +95,7 @@
   essay.addEventListener('input', updateCount);
   updateCount();
 
-  // If the deadline has passed, lock the form (server enforces this too).
+  // If the deadline has passed, lock the form (the server enforces this too).
   var dl = parseDeadline(deadlines[award]);
   if (dl && new Date() > dl) {
     var notice = document.getElementById('closed-notice');
@@ -107,11 +123,11 @@
     e.preventDefault();
     if (!form.checkValidity()) { form.reportValidity(); return; }
     if (!updateCount()) {
-      showToast('Your essay must be ' + min + '–' + max + ' words.', true);
+      showToast('Your essay must be ' + min + '–' + max + ' words.', 'error');
       return;
     }
     if (CFG.turnstileSiteKey && !turnstileToken) {
-      showToast('Please complete the bot check.', true);
+      showToast('Please complete the bot check.', 'error');
       return;
     }
 
@@ -137,13 +153,13 @@
         window.location.href = '/submitted?id=' + encodeURIComponent(r.data.id);
         return;
       }
-      showToast((r.data && r.data.error) || 'Something went wrong. Please try again.', true);
+      showToast((r.data && r.data.error) || 'Something went wrong. Please try again.', 'error', 7000);
       if (window.turnstile) { try { window.turnstile.reset(); } catch (err) {} }
       turnstileToken = '';
       submitBtn.disabled = false;
       submitBtn.textContent = original;
     }).catch(function () {
-      showToast('Network error. Please try again.', true);
+      showToast('Network error. Please try again.', 'error', 7000);
       submitBtn.disabled = false;
       submitBtn.textContent = original;
     });
