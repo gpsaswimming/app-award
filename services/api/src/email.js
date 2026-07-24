@@ -32,6 +32,26 @@ export function buildEmailHtml({ awardId, submissionId, data, words, season }) {
 </div>`;
 }
 
+// A short confirmation receipt to the submitter. No essay, no PDF — just proof
+// of receipt + reference ID. `toEmail` is a validated address (the format check
+// disallows whitespace, so it is safe in the header).
+export async function sendReceiptEmail(mailer, cfg, { awardId, submissionId, toEmail }) {
+  const award = AWARDS[awardId];
+  const html = `<div style="font-family:Inter,Arial,sans-serif;color:#111">
+  <h2 style="color:#002366;margin:0 0 8px">Submission received</h2>
+  <p>Thank you — your <strong>${escapeHtml(award.label)}</strong> submission has been received by the GPSA league president.</p>
+  <p style="margin:14px 0"><span style="color:#555">Reference</span> &nbsp;<strong>${escapeHtml(submissionId)}</strong></p>
+  <p>Entries are reviewed by the sponsoring families, and winners are announced at the Championship (City) Meet. There is nothing further you need to do.</p>
+  <p style="color:#888;font-size:12px;margin-top:20px">Greater Peninsula Swimming Association</p>
+</div>`;
+  await mailer.sendMail({
+    from: cfg.mailFrom,
+    to: toEmail,
+    subject: `GPSA ${award.label} — submission received (${submissionId})`,
+    html,
+  });
+}
+
 export async function sendSubmissionEmail(mailer, cfg, { awardId, submissionId, data, words, pdf }) {
   const award = AWARDS[awardId];
   const html = buildEmailHtml({ awardId, submissionId, data, words, season: cfg.season });
