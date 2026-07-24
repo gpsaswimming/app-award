@@ -4,95 +4,117 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Hurdle Scholarship Application — GPSA</title>
+  <link rel="icon" href="https://assets.gpsaswimming.org/img/favicons/favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="https://assets.gpsaswimming.org/img/favicons/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://assets.gpsaswimming.org/img/favicons/favicon-16x16.png">
+  <link rel="apple-touch-icon" href="https://assets.gpsaswimming.org/img/favicons/apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://css.gpsaswimming.org/gpsa-tools-common.css">
-  <link rel="stylesheet" href="/award.css">
+  <link rel="stylesheet" href="https://css.gpsaswimming.org/gpsa-award.css">
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
 </head>
 <body>
-  <header class="site-header">
-    <div class="container">
-      <img src="https://assets.gpsaswimming.org/img/gpsa_logo.png" alt="GPSA logo" onerror="this.style.display='none'">
-      <h1>J. Kyle Hurdle Scholarship</h1>
+  <header class="hero hero--form">
+    <div class="hero-inner">
+      <div class="hero-brand">
+        <img src="https://assets.gpsaswimming.org/img/gpsa_logo.png" alt="GPSA"
+             onerror="this.onerror=null;this.src='https://placehold.co/84x84/002366/FFFFFF?text=GPSA';">
+        <span class="hero-wordmark">Greater Peninsula Swimming Association</span>
+        <a class="hero-back" href="/">All awards</a>
+      </div>
+      <span class="eyebrow">Scholarship</span>
+      <h1 class="hero-title">J. Kyle Hurdle Scholarship</h1>
+      <p class="hero-sub">Up to $800 for a graduating senior swimmer advancing their education.</p>
     </div>
   </header>
 
-  <main class="container">
-    <p><a class="back-link" href="/">&larr; All awards</a></p>
+  <main class="wrap">
     <div id="closed-notice" class="notice" hidden>Submissions for this scholarship are closed.</div>
 
-    <form id="award-form" data-award="hurdle" class="form-card" novalidate>
-      <p class="prompt" data-prompt="hurdle" style="margin-bottom:1.5rem">
-        &ldquo;What positive impact has summer swimming had on your life? How do you intend to pay
-        this forward?&rdquo;
-      </p>
+    <form id="award-form" data-award="hurdle" novalidate>
+      <section class="card">
+        <p class="kicker">Applicant</p>
+        <h2>About you</h2>
+        <p class="lead">Tell us who's applying and where you're headed.</p>
 
-      <div class="field">
-        <label for="applicantName">Name of applicant <span class="req">*</span></label>
-        <input id="applicantName" name="applicantName" type="text" required autocomplete="name">
-      </div>
-      <div class="field">
-        <label for="addressLine1">Address <span class="req">*</span></label>
-        <input id="addressLine1" name="addressLine1" type="text" required autocomplete="address-line1">
-      </div>
-      <div class="field">
-        <label for="addressLine2">Address (line 2)</label>
-        <input id="addressLine2" name="addressLine2" type="text" autocomplete="address-line2">
-      </div>
-      <div class="two-col">
         <div class="field">
-          <label for="telephone">Telephone <span class="req">*</span></label>
-          <input id="telephone" name="telephone" type="tel" required autocomplete="tel">
+          <label for="applicantName">Name of applicant <span class="req">*</span></label>
+          <input id="applicantName" name="applicantName" type="text" required autocomplete="name">
         </div>
         <div class="field">
-          <label for="dateOfBirth">Date of birth <span class="req">*</span></label>
-          <input id="dateOfBirth" name="dateOfBirth" type="date" required>
-        </div>
-      </div>
-      <div class="two-col">
-        <div class="field">
-          <label for="pool">Pool represented <span class="req">*</span></label>
-          <select id="pool" name="pool" required data-teams></select>
+          <label for="addressLine1">Address <span class="req">*</span></label>
+          <input id="addressLine1" name="addressLine1" type="text" required autocomplete="address-line1">
         </div>
         <div class="field">
-          <label for="yearsInGPSA">Years in GPSA <span class="req">*</span></label>
-          <input id="yearsInGPSA" name="yearsInGPSA" type="number" min="0" max="20" required>
+          <label for="addressLine2">Address line 2 <span class="opt">(optional)</span></label>
+          <input id="addressLine2" name="addressLine2" type="text" autocomplete="address-line2">
         </div>
-      </div>
-      <div class="field">
-        <label for="favoriteStroke">Favorite stroke</label>
-        <input id="favoriteStroke" name="favoriteStroke" type="text">
-      </div>
-      <div class="field">
-        <label for="schoolToAttend">University / college / school to attend <span class="req">*</span></label>
-        <input id="schoolToAttend" name="schoolToAttend" type="text" required>
-      </div>
-      <div class="field">
-        <label>Already accepted? <span class="req">*</span></label>
-        <div class="radios">
-          <label><input type="radio" name="alreadyAccepted" value="Yes" required> Yes</label>
-          <label><input type="radio" name="alreadyAccepted" value="No"> No</label>
+        <div class="grid-2">
+          <div class="field">
+            <label for="telephone">Telephone <span class="req">*</span></label>
+            <input id="telephone" name="telephone" type="tel" required autocomplete="tel">
+          </div>
+          <div class="field">
+            <label for="dateOfBirth">Date of birth <span class="req">*</span></label>
+            <input id="dateOfBirth" name="dateOfBirth" type="date" required>
+          </div>
         </div>
-      </div>
-      <div class="field">
-        <label for="intendedMajor">Intended major</label>
-        <input id="intendedMajor" name="intendedMajor" type="text">
-      </div>
+        <div class="grid-2">
+          <div class="field">
+            <label for="pool">Pool represented <span class="req">*</span></label>
+            <select id="pool" name="pool" required data-teams></select>
+          </div>
+          <div class="field">
+            <label for="yearsInGPSA">Years in GPSA <span class="req">*</span></label>
+            <input id="yearsInGPSA" name="yearsInGPSA" type="number" min="0" max="20" required>
+          </div>
+        </div>
+        <div class="field">
+          <label for="favoriteStroke">Favorite stroke <span class="opt">(optional)</span></label>
+          <input id="favoriteStroke" name="favoriteStroke" type="text">
+        </div>
+        <div class="field">
+          <label for="schoolToAttend">University / college / school to attend <span class="req">*</span></label>
+          <input id="schoolToAttend" name="schoolToAttend" type="text" required>
+        </div>
+        <div class="field">
+          <span class="legend-label">Already accepted? <span class="req">*</span></span>
+          <div class="radios">
+            <label><input type="radio" name="alreadyAccepted" value="Yes" required> Yes</label>
+            <label><input type="radio" name="alreadyAccepted" value="No"> No</label>
+          </div>
+        </div>
+        <div class="field">
+          <label for="intendedMajor">Intended major <span class="opt">(optional)</span></label>
+          <input id="intendedMajor" name="intendedMajor" type="text">
+        </div>
+      </section>
 
-      <div class="field">
-        <label for="essay">Essay <span class="req">*</span></label>
-        <textarea id="essay" name="essay" required data-min="300" data-max="700"></textarea>
-        <div class="hint">Minimum 300, maximum 700 words. <span class="wordcount" id="wordcount">0 words</span></div>
-      </div>
+      <section class="card">
+        <p class="kicker">Essay</p>
+        <h2>Your essay</h2>
+        <p class="prompt">
+          “What positive impact has summer swimming had on your life? How do you intend to pay this
+          forward?”
+        </p>
+        <div class="field">
+          <label for="essay">Essay <span class="req">*</span></label>
+          <textarea id="essay" name="essay" required data-min="300" data-max="700"
+                    placeholder="Write your essay here…"></textarea>
+          <p class="hint">Minimum 300, maximum 700 words. <span class="wordcount" id="wordcount">0 words</span></p>
+        </div>
+      </section>
 
-      <div class="field" id="turnstile"></div>
-
-      <button class="btn" type="submit" id="submit">Submit application</button>
+      <section class="card">
+        <div id="turnstile" class="turnstile-holder"></div>
+        <button class="btn" type="submit" id="submit">Submit application</button>
+      </section>
     </form>
   </main>
 
-  <div id="toast" role="status" aria-live="polite"></div>
+  <div id="toast-container"></div>
   <script src="/config.js"></script>
   <script src="/app.js"></script>
 </body>
