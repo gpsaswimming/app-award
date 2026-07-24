@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Submission received — GPSA Awards</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://css.gpsaswimming.org/gpsa-tools-common.css">
+  <link rel="stylesheet" href="/award.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <img src="https://assets.gpsaswimming.org/img/gpsa_logo.png" alt="GPSA logo" onerror="this.style.display='none'">
+      <h1>Awards &amp; Scholarships</h1>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="form-card">
+      <h2 style="color:var(--navy);margin-top:0">Your submission was received</h2>
+      <p>Thank you. Your submission has been sent to the GPSA league president.</p>
+      <p id="ref" class="meta" hidden>Reference: <strong></strong> — keep this for your records.</p>
+      <p>
+        Entries are reviewed by the sponsoring families, and winners are announced at the
+        Championship (City) Meet. There is nothing further you need to do.
+      </p>
+      <p style="margin-top:1.5rem"><a class="btn" href="/">Back to all awards</a></p>
+    </div>
+  </main>
+
+  <script>
+    const id = new URLSearchParams(location.search).get('id');
+    if (id) {
+      const p = document.getElementById('ref');
+      p.querySelector('strong').textContent = id;
+      p.hidden = false;
+    }
+  </script>
+</body>
+</html>

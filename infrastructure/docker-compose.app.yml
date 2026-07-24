@@ -1,0 +1,11 @@
+# App tier — runs on the app node. Holds all secrets (api.env).
+# Ingress to :3000 must be restricted to the DMZ node by the operator's firewall.
+services:
+  app-award-api:
+    image: ghcr.io/gpsaswimming/app-award-api:latest
+    container_name: app-award-api
+    restart: unless-stopped
+    env_file:
+      - api.env
+    ports:
+      - "3000:3000"

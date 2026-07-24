@@ -1,0 +1,9 @@
+// Generated at container start from environment (envsubst). Do not edit.
+window.AWARD_CONFIG = {
+  turnstileSiteKey: "${TURNSTILE_SITE_KEY}",
+  season: "${SEASON}",
+  deadlines: {
+    hurdle: "${HURDLE_DEADLINE}",
+    lamberson: "${LAMBERSON_DEADLINE}"
+  }
+};
