@@ -25,6 +25,10 @@ export function validateSubmission(awardId, payload = {}) {
       errors.push(`${field.label} must be a valid email address.`);
       continue;
     }
+    if (value && field.pattern && !new RegExp(field.pattern).test(value)) {
+      errors.push(`${field.label} is not in the expected format.`);
+      continue;
+    }
     data[field.key] = value;
   }
 

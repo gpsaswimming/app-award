@@ -58,3 +58,46 @@ test('unknown award is rejected', () => {
   const r = validateSubmission('nope', {});
   assert.equal(r.ok, false);
 });
+
+const goodHurdle = {
+  applicantName: 'Jane Doe',
+  streetAddress: '123 Main St',
+  city: 'Newport News',
+  state: 'VA',
+  zip: '23601',
+  telephone: '(757) 555-1212',
+  email: 'jane@example.org',
+  dateOfBirth: '2008-05-01',
+  pool: 'Marlbank',
+  yearsInGPSA: '10',
+  schoolToAttend: 'State U',
+  alreadyAccepted: 'Yes',
+  essay: essay(300),
+};
+
+test('valid hurdle submission passes', () => {
+  const r = validateSubmission('hurdle', goodHurdle);
+  assert.equal(r.ok, true);
+});
+
+test('hurdle missing city fails', () => {
+  const r = validateSubmission('hurdle', { ...goodHurdle, city: '' });
+  assert.equal(r.ok, false);
+  assert.match(r.error, /City is required/i);
+});
+
+test('hurdle invalid state option is rejected', () => {
+  const r = validateSubmission('hurdle', { ...goodHurdle, state: 'ZZ' });
+  assert.equal(r.ok, false);
+});
+
+test('hurdle malformed zip fails the pattern', () => {
+  const r = validateSubmission('hurdle', { ...goodHurdle, zip: 'ABCDE' });
+  assert.equal(r.ok, false);
+  assert.match(r.error, /format/i);
+});
+
+test('hurdle accepts zip+4', () => {
+  const r = validateSubmission('hurdle', { ...goodHurdle, zip: '23601-1234' });
+  assert.equal(r.ok, true);
+});
