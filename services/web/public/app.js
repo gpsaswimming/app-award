@@ -163,6 +163,8 @@
     turnstileRendered = true;
     window.turnstile.render('#turnstile-widget', {
       sitekey: CFG.turnstileSiteKey,
+      theme: 'light',
+      size: 'flexible', // span the full width of the card
       callback: function (tok) { turnstileToken = tok; },
       'error-callback': function () { turnstileToken = ''; },
       'expired-callback': function () { turnstileToken = ''; }
