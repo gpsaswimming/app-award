@@ -147,73 +147,35 @@
     return;
   }
 
-  // Turnstile loader with an on-page status readout. The widget has failed to
-  // mount in ways that are hard to see through the console, so the holder shows
-  // exactly where it is until the real widget replaces it. Set ?tsdebug to keep
-  // the status text visible even after a successful render.
-  // NB: the holder is #turnstile-widget, NOT #turnstile — an id of "turnstile"
-  // becomes the window.turnstile named-element global, which Cloudflare's api.js
-  // mistakes for an already-loaded API ("Turnstile already has been loaded") and
-  // it bails without initialising. Root cause of the widget never mounting.
-  var tsHolder = document.getElementById('turnstile-widget');
-  var tsDebug = /[?&]tsdebug/.test(location.search);
-  function tsStatus(msg) {
-    if (window.console && console.log) console.log('[turnstile] ' + msg);
-    if (tsHolder && !tsHolder.querySelector('iframe')) {
-      tsHolder.textContent = 'Bot check: ' + msg;
-      tsHolder.style.fontSize = '12px';
-      tsHolder.style.color = '#888';
-    }
-  }
+  // Render the Turnstile widget. Cloudflare's api.js invokes window.onTurnstileLoad
+  // once ready; the trailing renderTurnstile() covers the race where api.js loads
+  // before this script runs. NB: the holder id is #turnstile-widget, NOT
+  // #turnstile — an element id of "turnstile" becomes the window.turnstile
+  // named-element global, which api.js mistakes for an already-loaded API and
+  // then bails without initialising (the widget silently never mounts).
   var turnstileRendered = false;
   function renderTurnstile() {
-    if (turnstileRendered) return;
-    if (!window.turnstile || typeof window.turnstile.render !== 'function') { tsStatus('API not ready'); return; }
-    if (!CFG.turnstileSiteKey || CFG.turnstileSiteKey.indexOf('${') === 0) { tsStatus('no site key configured'); return; }
+    if (turnstileRendered || !window.turnstile || typeof window.turnstile.render !== 'function') return;
+    if (!CFG.turnstileSiteKey || CFG.turnstileSiteKey.indexOf('${') === 0) {
+      console.warn('Turnstile site key is not configured; the widget will not render.');
+      return;
+    }
     turnstileRendered = true;
-    tsStatus('rendering…');
-    try {
-      window.turnstile.render('#turnstile-widget', {
-        sitekey: CFG.turnstileSiteKey,
-        callback: function (tok) { turnstileToken = tok; if (tsDebug) tsStatus('solved (' + tok.length + ')'); },
-        'error-callback': function (code) { turnstileToken = ''; tsStatus('error code ' + code); },
-        'expired-callback': function () { turnstileToken = ''; }
-      });
-    } catch (e) { turnstileRendered = false; tsStatus('render threw: ' + e.message); }
+    window.turnstile.render('#turnstile-widget', {
+      sitekey: CFG.turnstileSiteKey,
+      callback: function (tok) { turnstileToken = tok; },
+      'error-callback': function () { turnstileToken = ''; },
+      'expired-callback': function () { turnstileToken = ''; }
+    });
   }
-
-  // Load api.js from here (DOM ready) rather than a static <head> tag, with the
-  // onload callback defined first so the API always finds it. A poll + watchdog
-  // back up the callback and surface a clear status if it never initialises.
   window.onTurnstileLoad = renderTurnstile;
-  tsStatus('loading…');
-  // Inject api.js unless a fully-initialised turnstile is somehow already present.
   if (!(window.turnstile && typeof window.turnstile.render === 'function')) {
     var tsScript = document.createElement('script');
     tsScript.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=onTurnstileLoad';
     tsScript.async = true;
-    tsScript.onerror = function () { tsStatus('api.js failed to load (blocked or offline)'); };
     document.head.appendChild(tsScript);
   }
   renderTurnstile();
-  function tsChunkCount() {
-    if (!window.performance || !performance.getEntriesByType) return '?';
-    return performance.getEntriesByType('resource')
-      .filter(function (r) { return r.name.indexOf('turnstile/v0/g/') > -1; }).length;
-  }
-  var tsTries = 0;
-  var tsPoll = setInterval(function () {
-    if (turnstileRendered && tsHolder && tsHolder.querySelector('iframe')) { clearInterval(tsPoll); return; }
-    if (window.turnstile && typeof window.turnstile.render === 'function') { renderTurnstile(); }
-    if (++tsTries >= 40) { // ~12s
-      clearInterval(tsPoll);
-      if (!(tsHolder && tsHolder.querySelector('iframe'))) {
-        tsStatus('timeout — ' + (window.turnstile
-          ? 'keys=' + Object.keys(window.turnstile).length + ' render=' + typeof window.turnstile.render
-          : 'turnstile undefined') + ' chunk=' + tsChunkCount());
-      }
-    }
-  }, 300);
 
   form.addEventListener('submit', function (e) {
     e.preventDefault();
