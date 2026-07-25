@@ -13,6 +13,24 @@
     'Willow Oaks', 'Windy Point', 'Wythe'
   ];
 
+  // US states for the applicant address select. Value is the 2-letter code
+  // (mirrors the API's US_STATES); the label shows the full name.
+  var US_STATES = [
+    ['AL', 'Alabama'], ['AK', 'Alaska'], ['AZ', 'Arizona'], ['AR', 'Arkansas'],
+    ['CA', 'California'], ['CO', 'Colorado'], ['CT', 'Connecticut'], ['DE', 'Delaware'],
+    ['DC', 'District of Columbia'], ['FL', 'Florida'], ['GA', 'Georgia'], ['HI', 'Hawaii'],
+    ['ID', 'Idaho'], ['IL', 'Illinois'], ['IN', 'Indiana'], ['IA', 'Iowa'],
+    ['KS', 'Kansas'], ['KY', 'Kentucky'], ['LA', 'Louisiana'], ['ME', 'Maine'],
+    ['MD', 'Maryland'], ['MA', 'Massachusetts'], ['MI', 'Michigan'], ['MN', 'Minnesota'],
+    ['MS', 'Mississippi'], ['MO', 'Missouri'], ['MT', 'Montana'], ['NE', 'Nebraska'],
+    ['NV', 'Nevada'], ['NH', 'New Hampshire'], ['NJ', 'New Jersey'], ['NM', 'New Mexico'],
+    ['NY', 'New York'], ['NC', 'North Carolina'], ['ND', 'North Dakota'], ['OH', 'Ohio'],
+    ['OK', 'Oklahoma'], ['OR', 'Oregon'], ['PA', 'Pennsylvania'], ['RI', 'Rhode Island'],
+    ['SC', 'South Carolina'], ['SD', 'South Dakota'], ['TN', 'Tennessee'], ['TX', 'Texas'],
+    ['UT', 'Utah'], ['VT', 'Vermont'], ['VA', 'Virginia'], ['WA', 'Washington'],
+    ['WV', 'West Virginia'], ['WI', 'Wisconsin'], ['WY', 'Wyoming']
+  ];
+
   function escapeHtml(s) {
     return String(s == null ? '' : s)
       .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
@@ -70,6 +88,31 @@
     sel.appendChild(frag);
   });
 
+  // Populate any US-state selects (applicant address).
+  document.querySelectorAll('select[data-states]').forEach(function (sel) {
+    var frag = document.createDocumentFragment();
+    var ph = document.createElement('option');
+    ph.value = ''; ph.textContent = 'Select a state…'; ph.disabled = true; ph.selected = true;
+    frag.appendChild(ph);
+    US_STATES.forEach(function (pair) {
+      var o = document.createElement('option');
+      o.value = pair[0]; o.textContent = pair[1];
+      frag.appendChild(o);
+    });
+    sel.appendChild(frag);
+  });
+
+  // Live-format telephone inputs as the user types: (XXX) XXX-XXXX.
+  function formatPhone(v) {
+    var d = (v || '').replace(/\D/g, '').slice(0, 10);
+    if (d.length < 4) return d ? '(' + d : '';
+    if (d.length < 7) return '(' + d.slice(0, 3) + ') ' + d.slice(3);
+    return '(' + d.slice(0, 3) + ') ' + d.slice(3, 6) + '-' + d.slice(6);
+  }
+  document.querySelectorAll('input[type="tel"]').forEach(function (el) {
+    el.addEventListener('input', function () { el.value = formatPhone(el.value); });
+  });
+
   var form = document.getElementById('award-form');
   if (!form) return; // landing / confirmation pages: nothing more to do
 
@@ -104,9 +147,16 @@
     return;
   }
 
+  // The Turnstile API is ready only once `turnstile.render` is an actual
+  // function. With `render=explicit`, `window.turnstile` is assigned slightly
+  // before `render` is attached, so checking the object alone renders too early
+  // and throws "render is not a function".
+  function turnstileReady() {
+    return window.turnstile && typeof window.turnstile.render === 'function';
+  }
   // Render the Turnstile widget once its async script is ready.
   function renderTurnstile() {
-    if (!window.turnstile || !CFG.turnstileSiteKey) return;
+    if (!turnstileReady() || !CFG.turnstileSiteKey) return;
     window.turnstile.render('#turnstile', {
       sitekey: CFG.turnstileSiteKey,
       callback: function (tok) { turnstileToken = tok; },
@@ -116,7 +166,7 @@
   }
   var tries = 0;
   var poll = setInterval(function () {
-    if (window.turnstile || tries++ > 50) { clearInterval(poll); renderTurnstile(); }
+    if (turnstileReady() || tries++ > 100) { clearInterval(poll); renderTurnstile(); }
   }, 100);
 
   form.addEventListener('submit', function (e) {

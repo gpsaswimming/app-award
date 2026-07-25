@@ -44,12 +44,28 @@
           <input id="applicantName" name="applicantName" type="text" required autocomplete="name">
         </div>
         <div class="field">
-          <label for="addressLine1">Address <span class="req">*</span></label>
-          <input id="addressLine1" name="addressLine1" type="text" required autocomplete="address-line1">
+          <label for="streetAddress">Street address <span class="req">*</span></label>
+          <input id="streetAddress" name="streetAddress" type="text" required autocomplete="address-line1">
         </div>
         <div class="field">
-          <label for="addressLine2">Address line 2 <span class="opt">(optional)</span></label>
+          <label for="addressLine2">Apt / suite / unit <span class="opt">(optional)</span></label>
           <input id="addressLine2" name="addressLine2" type="text" autocomplete="address-line2">
+        </div>
+        <div class="field">
+          <label for="city">City <span class="req">*</span></label>
+          <input id="city" name="city" type="text" required autocomplete="address-level2">
+        </div>
+        <div class="grid-2">
+          <div class="field">
+            <label for="state">State <span class="req">*</span></label>
+            <select id="state" name="state" required autocomplete="address-level1" data-states></select>
+          </div>
+          <div class="field">
+            <label for="zip">ZIP code <span class="req">*</span></label>
+            <input id="zip" name="zip" type="text" required autocomplete="postal-code"
+                   inputmode="numeric" pattern="\d{5}(-\d{4})?" maxlength="10"
+                   placeholder="23601">
+          </div>
         </div>
         <div class="grid-2">
           <div class="field">

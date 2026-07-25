@@ -11,6 +11,15 @@ export const TEAMS = [
   'Willow Oaks', 'Windy Point', 'Wythe',
 ];
 
+// US state / territory codes for the applicant address `state` select. Values
+// are the 2-letter codes stored in the submission; the form shows full names.
+export const US_STATES = [
+  'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'DC', 'FL', 'GA', 'HI', 'ID',
+  'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO',
+  'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA',
+  'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY',
+];
+
 export const AWARDS = {
   hurdle: {
     id: 'hurdle',
@@ -24,8 +33,11 @@ export const AWARDS = {
     pdfIncludesFields: false,
     fields: [
       { key: 'applicantName', label: 'Name of applicant', type: 'text', required: true },
-      { key: 'addressLine1', label: 'Address', type: 'text', required: true },
-      { key: 'addressLine2', label: 'Address (line 2)', type: 'text', required: false },
+      { key: 'streetAddress', label: 'Street address', type: 'text', required: true },
+      { key: 'addressLine2', label: 'Apt / suite / unit', type: 'text', required: false },
+      { key: 'city', label: 'City', type: 'text', required: true },
+      { key: 'state', label: 'State', type: 'select', required: true, options: US_STATES },
+      { key: 'zip', label: 'ZIP code', type: 'text', required: true, pattern: '^\\d{5}(-\\d{4})?$' },
       { key: 'telephone', label: 'Telephone', type: 'tel', required: true },
       { key: 'email', label: 'Email', type: 'email', required: true },
       { key: 'dateOfBirth', label: 'Date of birth', type: 'date', required: true },

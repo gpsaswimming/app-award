@@ -145,8 +145,11 @@ Fields are transcribed from the 2025 paper forms.
 | Field | Input | Required | Notes |
 |---|---|---|---|
 | Applicant name | text | ✔ | identity — body only |
-| Address (line 1) | text | ✔ | identity — body only |
-| Address (line 2) | text | | identity — body only |
+| Street address | text | ✔ | identity — body only |
+| Apt / suite / unit | text | | identity — body only |
+| City | text | ✔ | identity — body only |
+| State | select (US states) | ✔ | identity — body only |
+| ZIP code | text | ✔ | identity — body only; `NNNNN` or `NNNNN-NNNN` |
 | Telephone | tel | ✔ | identity — body only |
 | Date of birth | date | ✔ | identity — body only |
 | Pool represented | select (18 teams) | ✔ | identity — body only |
