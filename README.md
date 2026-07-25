@@ -5,7 +5,7 @@ Standardized web intake for the Greater Peninsula Swimming Association's two ann
 - **J. Kyle Hurdle Scholarship** — application by/for a graduating senior swimmer.
 - **Kei Lamberson Outstanding Coach Award** — nomination of a coach by a GPSA family.
 
-Served at **`award.gpsaswimming.org`**. A landing page presents both awards; the user picks one and
+Served at **`awards.gpsaswimming.org`**. A landing page presents both awards; the user picks one and
 completes a structured form (essay in a word-count-enforced text area, no file uploads). On submit,
 the platform emails the league president the full submission plus a **forward-ready PDF** — blinded
 for the scholarship, full for the coach award — so entries arrive standardized and ready for the

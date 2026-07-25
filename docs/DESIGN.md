@@ -1,6 +1,6 @@
 # GPSA Awards & Scholarship Intake — Platform Design
 
-**Repo folder:** `app-award/` · **Deploy:** self-hosted 2-tier — nginx (DMZ node) + Fastify (app node) · **Subdomain:** `award.gpsaswimming.org`
+**Repo folder:** `app-award/` · **Deploy:** self-hosted 2-tier — nginx (DMZ node) + Fastify (app node) · **Subdomain:** `awards.gpsaswimming.org`
 **Status:** DRAFT for review · **Revision:** 4 (2026-07-24)
 
 ---
@@ -21,7 +21,7 @@ the president never edits a document.
 
 ### What v1 does
 
-- Presents a landing page (`award.gpsaswimming.org`) with the two awards; the user picks one.
+- Presents a landing page (`awards.gpsaswimming.org`) with the two awards; the user picks one.
 - Serves a structured form per award (identity fields as discrete inputs; essay in a word-count-
   enforced text area). **No file uploads.**
 - On submit, sends **one email to the league president** containing the full submission in the body
@@ -70,7 +70,7 @@ once a year — which is what keeps the design this small.
 ## 1. Architecture
 
 ```
-   Cloudflare edge ─▶ award.gpsaswimming.org
+   Cloudflare edge ─▶ awards.gpsaswimming.org
         │
         ▼  DMZ node
   ┌──────────────────────────────────────────────────┐
@@ -116,7 +116,7 @@ restarted at will.
 
 ## 2. Submission flow (happy path)
 
-1. User opens `award.gpsaswimming.org`, reads the two award cards, clicks **Apply / Nominate**.
+1. User opens `awards.gpsaswimming.org`, reads the two award cards, clicks **Apply / Nominate**.
 2. The form loads (`/scholarship` or `/coach-award`). A live word counter tracks the essay; the
    Turnstile widget renders.
 3. User submits. Client-side checks (required fields, word band, Turnstile solved) are UX only.
@@ -304,7 +304,7 @@ container of its own).
 - **CI → GHCR:** GitHub Actions builds + pushes both images on merge to `main` via the automatic
   `GITHUB_TOKEN`; images are **public** so the nodes pull with no login. No app secrets in CI.
 - **Runtime config:** per-node `.env` files (§7), git-ignored, chmod 600.
-- **Edge:** `award.gpsaswimming.org` routes through the Cloudflare edge to `app-award-web` on the
+- **Edge:** `awards.gpsaswimming.org` routes through the Cloudflare edge to `app-award-web` on the
   DMZ node.
 
 ### Node-to-node traffic model (artifact only — firewall rules are the operator's)

@@ -5,7 +5,7 @@ Guidance for working in this repo. See [`docs/DESIGN.md`](docs/DESIGN.md) for th
 ## What this is
 
 `app-award` is a stateless web intake for two GPSA honors — the **J. Kyle Hurdle Scholarship** and
-the **Kei Lamberson Outstanding Coach Award** — served at `award.gpsaswimming.org`. A submission is
+the **Kei Lamberson Outstanding Coach Award** — served at `awards.gpsaswimming.org`. A submission is
 validated, rendered to an email + a forward-ready PDF, sent to the league president, and forgotten.
 **Nothing is persisted.**
 
