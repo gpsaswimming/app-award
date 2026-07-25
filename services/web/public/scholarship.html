@@ -130,7 +130,10 @@
       </section>
 
       <section class="card">
-        <div id="turnstile" class="turnstile-holder"></div>
+        <!-- id must NOT be "turnstile": named-element globals would make
+             window.turnstile === this div, and Cloudflare's api.js sees that
+             as "already loaded" and never initialises. -->
+        <div id="turnstile-widget" class="turnstile-holder"></div>
         <button class="btn" type="submit" id="submit">Submit application</button>
       </section>
     </form>

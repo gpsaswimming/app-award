@@ -151,7 +151,11 @@
   // mount in ways that are hard to see through the console, so the holder shows
   // exactly where it is until the real widget replaces it. Set ?tsdebug to keep
   // the status text visible even after a successful render.
-  var tsHolder = document.getElementById('turnstile');
+  // NB: the holder is #turnstile-widget, NOT #turnstile — an id of "turnstile"
+  // becomes the window.turnstile named-element global, which Cloudflare's api.js
+  // mistakes for an already-loaded API ("Turnstile already has been loaded") and
+  // it bails without initialising. Root cause of the widget never mounting.
+  var tsHolder = document.getElementById('turnstile-widget');
   var tsDebug = /[?&]tsdebug/.test(location.search);
   function tsStatus(msg) {
     if (window.console && console.log) console.log('[turnstile] ' + msg);
@@ -169,7 +173,7 @@
     turnstileRendered = true;
     tsStatus('rendering…');
     try {
-      window.turnstile.render('#turnstile', {
+      window.turnstile.render('#turnstile-widget', {
         sitekey: CFG.turnstileSiteKey,
         callback: function (tok) { turnstileToken = tok; if (tsDebug) tsStatus('solved (' + tok.length + ')'); },
         'error-callback': function (code) { turnstileToken = ''; tsStatus('error code ' + code); },
