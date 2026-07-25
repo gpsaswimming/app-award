@@ -147,33 +147,63 @@
     return;
   }
 
+  // Turnstile loader with an on-page status readout. The widget has failed to
+  // mount in ways that are hard to see through the console, so the holder shows
+  // exactly where it is until the real widget replaces it. Set ?tsdebug to keep
+  // the status text visible even after a successful render.
+  var tsHolder = document.getElementById('turnstile');
+  var tsDebug = /[?&]tsdebug/.test(location.search);
+  function tsStatus(msg) {
+    if (window.console && console.log) console.log('[turnstile] ' + msg);
+    if (tsHolder && !tsHolder.querySelector('iframe')) {
+      tsHolder.textContent = 'Bot check: ' + msg;
+      tsHolder.style.fontSize = '12px';
+      tsHolder.style.color = '#888';
+    }
+  }
   var turnstileRendered = false;
   function renderTurnstile() {
-    if (turnstileRendered || !window.turnstile || typeof window.turnstile.render !== 'function') return;
-    if (!CFG.turnstileSiteKey) {
-      console.warn('Turnstile site key is not configured; the widget will not render.');
-      return;
-    }
+    if (turnstileRendered) return;
+    if (!window.turnstile || typeof window.turnstile.render !== 'function') { tsStatus('API not ready'); return; }
+    if (!CFG.turnstileSiteKey || CFG.turnstileSiteKey.indexOf('${') === 0) { tsStatus('no site key configured'); return; }
     turnstileRendered = true;
-    window.turnstile.render('#turnstile', {
-      sitekey: CFG.turnstileSiteKey,
-      callback: function (tok) { turnstileToken = tok; },
-      'error-callback': function () { turnstileToken = ''; },
-      'expired-callback': function () { turnstileToken = ''; }
-    });
+    tsStatus('rendering…');
+    try {
+      window.turnstile.render('#turnstile', {
+        sitekey: CFG.turnstileSiteKey,
+        callback: function (tok) { turnstileToken = tok; if (tsDebug) tsStatus('solved (' + tok.length + ')'); },
+        'error-callback': function (code) { turnstileToken = ''; tsStatus('error code ' + code); },
+        'expired-callback': function () { turnstileToken = ''; }
+      });
+    } catch (e) { turnstileRendered = false; tsStatus('render threw: ' + e.message); }
   }
 
-  // Load the Turnstile API from here rather than a static <head> tag. A
-  // parser-inserted api.js is served so early (often from cache, before <body>
-  // exists) that it fails to bootstrap its challenge iframe and the widget
-  // never mounts — observed on this site, while a JS-injected load at DOM-ready
-  // works reliably. Define the onload callback FIRST, then inject the script, so
-  // the API always finds `onTurnstileLoad` and renders once initialised.
+  // Load api.js from here (DOM ready) rather than a static <head> tag, with the
+  // onload callback defined first so the API always finds it. A poll + watchdog
+  // back up the callback and surface a clear status if it never initialises.
   window.onTurnstileLoad = renderTurnstile;
-  var tsScript = document.createElement('script');
-  tsScript.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=onTurnstileLoad';
-  tsScript.async = true;
-  document.head.appendChild(tsScript);
+  if (window.turnstile) {
+    renderTurnstile(); // api.js already present (e.g. re-entrant load)
+  } else {
+    tsStatus('loading…');
+    var tsScript = document.createElement('script');
+    tsScript.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=onTurnstileLoad';
+    tsScript.async = true;
+    tsScript.onerror = function () { tsStatus('api.js failed to load (blocked or offline)'); };
+    document.head.appendChild(tsScript);
+  }
+  var tsTries = 0;
+  var tsPoll = setInterval(function () {
+    if (turnstileRendered && tsHolder && tsHolder.querySelector('iframe')) { clearInterval(tsPoll); return; }
+    if (window.turnstile && typeof window.turnstile.render === 'function') { renderTurnstile(); }
+    if (++tsTries >= 40) { // ~12s
+      clearInterval(tsPoll);
+      if (!(tsHolder && tsHolder.querySelector('iframe'))) {
+        tsStatus('timeout — turnstile ' + (window.turnstile
+          ? 'loaded but render=' + typeof window.turnstile.render : 'never loaded'));
+      }
+    }
+  }, 300);
 
   form.addEventListener('submit', function (e) {
     e.preventDefault();
