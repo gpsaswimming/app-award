@@ -147,16 +147,19 @@
     return;
   }
 
-  // The Turnstile API is ready only once `turnstile.render` is an actual
-  // function. With `render=explicit`, `window.turnstile` is assigned slightly
-  // before `render` is attached, so checking the object alone renders too early
-  // and throws "render is not a function".
-  function turnstileReady() {
-    return window.turnstile && typeof window.turnstile.render === 'function';
-  }
-  // Render the Turnstile widget once its async script is ready.
+  // Render via Cloudflare's onload callback — the reliable "API ready" signal
+  // (same pattern as app-ads). The script tag carries
+  // `render=explicit&onload=onTurnstileLoad`, so Turnstile invokes
+  // window.onTurnstileLoad once it is fully initialised. The backstop call
+  // covers the case where api.js finished before this script ran.
+  var turnstileRendered = false;
   function renderTurnstile() {
-    if (!turnstileReady() || !CFG.turnstileSiteKey) return;
+    if (turnstileRendered || !window.turnstile) return;
+    if (!CFG.turnstileSiteKey) {
+      console.warn('Turnstile site key is not configured; the widget will not render.');
+      return;
+    }
+    turnstileRendered = true;
     window.turnstile.render('#turnstile', {
       sitekey: CFG.turnstileSiteKey,
       callback: function (tok) { turnstileToken = tok; },
@@ -164,10 +167,8 @@
       'expired-callback': function () { turnstileToken = ''; }
     });
   }
-  var tries = 0;
-  var poll = setInterval(function () {
-    if (turnstileReady() || tries++ > 100) { clearInterval(poll); renderTurnstile(); }
-  }, 100);
+  window.onTurnstileLoad = renderTurnstile;
+  renderTurnstile(); // in case api.js already loaded before this script ran
 
   form.addEventListener('submit', function (e) {
     e.preventDefault();
