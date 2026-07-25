@@ -182,15 +182,20 @@
   // onload callback defined first so the API always finds it. A poll + watchdog
   // back up the callback and surface a clear status if it never initialises.
   window.onTurnstileLoad = renderTurnstile;
-  if (window.turnstile) {
-    renderTurnstile(); // api.js already present (e.g. re-entrant load)
-  } else {
-    tsStatus('loading…');
+  tsStatus('loading…');
+  // Inject api.js unless a fully-initialised turnstile is somehow already present.
+  if (!(window.turnstile && typeof window.turnstile.render === 'function')) {
     var tsScript = document.createElement('script');
     tsScript.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=onTurnstileLoad';
     tsScript.async = true;
     tsScript.onerror = function () { tsStatus('api.js failed to load (blocked or offline)'); };
     document.head.appendChild(tsScript);
+  }
+  renderTurnstile();
+  function tsChunkCount() {
+    if (!window.performance || !performance.getEntriesByType) return '?';
+    return performance.getEntriesByType('resource')
+      .filter(function (r) { return r.name.indexOf('turnstile/v0/g/') > -1; }).length;
   }
   var tsTries = 0;
   var tsPoll = setInterval(function () {
@@ -199,8 +204,9 @@
     if (++tsTries >= 40) { // ~12s
       clearInterval(tsPoll);
       if (!(tsHolder && tsHolder.querySelector('iframe'))) {
-        tsStatus('timeout — turnstile ' + (window.turnstile
-          ? 'loaded but render=' + typeof window.turnstile.render : 'never loaded'));
+        tsStatus('timeout — ' + (window.turnstile
+          ? 'keys=' + Object.keys(window.turnstile).length + ' render=' + typeof window.turnstile.render
+          : 'turnstile undefined') + ' chunk=' + tsChunkCount());
       }
     }
   }, 300);
