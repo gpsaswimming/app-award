@@ -147,14 +147,9 @@
     return;
   }
 
-  // Render via Cloudflare's onload callback — the reliable "API ready" signal
-  // (same pattern as app-ads). The script tag carries
-  // `render=explicit&onload=onTurnstileLoad`, so Turnstile invokes
-  // window.onTurnstileLoad once it is fully initialised. The backstop call
-  // covers the case where api.js finished before this script ran.
   var turnstileRendered = false;
   function renderTurnstile() {
-    if (turnstileRendered || !window.turnstile) return;
+    if (turnstileRendered || !window.turnstile || typeof window.turnstile.render !== 'function') return;
     if (!CFG.turnstileSiteKey) {
       console.warn('Turnstile site key is not configured; the widget will not render.');
       return;
@@ -167,8 +162,18 @@
       'expired-callback': function () { turnstileToken = ''; }
     });
   }
+
+  // Load the Turnstile API from here rather than a static <head> tag. A
+  // parser-inserted api.js is served so early (often from cache, before <body>
+  // exists) that it fails to bootstrap its challenge iframe and the widget
+  // never mounts — observed on this site, while a JS-injected load at DOM-ready
+  // works reliably. Define the onload callback FIRST, then inject the script, so
+  // the API always finds `onTurnstileLoad` and renders once initialised.
   window.onTurnstileLoad = renderTurnstile;
-  renderTurnstile(); // in case api.js already loaded before this script ran
+  var tsScript = document.createElement('script');
+  tsScript.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=onTurnstileLoad';
+  tsScript.async = true;
+  document.head.appendChild(tsScript);
 
   form.addEventListener('submit', function (e) {
     e.preventDefault();
