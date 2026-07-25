@@ -13,9 +13,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://css.gpsaswimming.org/gpsa-tools-common.css">
   <link rel="stylesheet" href="https://css.gpsaswimming.org/gpsa-award.css">
-  <!-- data-cfasync="false" keeps Cloudflare Rocket Loader from re-importing this
-       script; without it Turnstile double-loads ("already been loaded") and never renders. -->
-  <script data-cfasync="false" src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
+  <!-- Cloudflare Turnstile — explicit render + onload callback so we can supply the injected site key. -->
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=onTurnstileLoad" async defer></script>
 </head>
 <body>
   <header class="hero hero--form">
